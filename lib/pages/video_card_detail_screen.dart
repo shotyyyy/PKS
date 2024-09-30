@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hello_app/models/VideoCard.dart';
+import '../models/video_card.dart';
 
-class CardPage extends StatelessWidget {
+class VideoCardDetailScreen extends StatelessWidget {
   final VideoCard videoCard;
 
-  CardPage({required this.videoCard});
+  VideoCardDetailScreen({required this.videoCard});
 
   @override
   Widget build(BuildContext context) {

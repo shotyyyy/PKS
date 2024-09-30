@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hello_app/pages/VideoCardDetailScreen.dart';
-import 'package:hello_app/models/VideoCard.dart';
+import '../models/video_card.dart';
+import '../pages/video_card_detail_screen.dart';
 
-class ItemCard extends StatelessWidget {
+class VideoCardItem extends StatelessWidget {
   final VideoCard videoCard;
 
-  ItemCard({required this.videoCard});
+  VideoCardItem({required this.videoCard});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ItemCard extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CardPage(videoCard: videoCard),
+              builder: (context) => VideoCardDetailScreen(videoCard: videoCard),
             ),
           );
         },
@@ -26,18 +26,6 @@ class ItemCard extends StatelessWidget {
             ListTile(
               title: Text(videoCard.name),
               subtitle: Text('\$${videoCard.price.toStringAsFixed(2)}'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        CardPage(videoCard: videoCard),
-                  ),
-                );
-              },
-              child: Text('Подробнее'),
             ),
           ],
         ),
