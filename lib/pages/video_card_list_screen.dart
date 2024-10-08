@@ -3,7 +3,6 @@ import '../models/video_card.dart';
 import '../components/video_card_item.dart';
 
 class VideoCardListScreen extends StatelessWidget {
-  // Пример списка товаров (видеокарт)
   final List<VideoCard> videoCards = [
     VideoCard(
       name: 'NVIDIA GeForce RTX 3080',
