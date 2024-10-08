@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import '../models/video_card.dart';
 import '../components/video_card_item.dart';
+import 'add_video_card_screen.dart';
 
-class VideoCardListScreen extends StatelessWidget {
-  // Пример списка товаров (видеокарт)
-  final List<VideoCard> videoCards = [
+class VideoCardListScreen extends StatefulWidget {
+  @override
+  _VideoCardListScreenState createState() => _VideoCardListScreenState();
+}
+
+class _VideoCardListScreenState extends State<VideoCardListScreen> {
+  List<VideoCard> videoCards = [
     VideoCard(
       name: 'NVIDIA GeForce RTX 3080',
       description:
-      'Топовая настольная видеокарта с архитектурой Ampere. Здесь используется чип GA102 с 8704 ядрами и 10 ГБ видеопамяти GDDR6X. Производительность в играх при 4K разрешении заметно выше, чем у RTX 2080 Ti - примерно на 15%..',
+      'Топовая настольная видеокарта с архитектурой Ampere. Здесь используется чип GA102 с 8704 ядрами и 10 ГБ видеопамяти GDDR6X. Производительность в играх при 4K разрешении заметно выше, чем у RTX 2080 Ti - примерно на 15%.',
       imageUrl:
       'https://ir.ozone.ru/s3/multimedia-1-t/wc1000/6923180405.jpg',
       price: 899.99,
@@ -39,17 +44,72 @@ class VideoCardListScreen extends StatelessWidget {
     ),
   ];
 
+  void _removeVideoCard(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Вы уверены?"),
+          content: Text("Вы действительно хотите удалить этот товар?"),
+          actions: [
+            TextButton(
+              child: Text("Отмена"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Удалить"),
+              onPressed: () {
+                setState(() {
+                  videoCards.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addVideoCard(VideoCard newCard) {
+    setState(() {
+      videoCards.add(newCard);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Список видеокарт'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddVideoCardScreen(onAdd: _addVideoCard),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: videoCards.length,
         itemBuilder: (context, index) {
-          return VideoCardItem(
-            videoCard: videoCards[index],
+          return Dismissible(
+            key: UniqueKey(),
+            background: Container(color: Colors.red),
+            onDismissed: (direction) {
+              _removeVideoCard(index);
+            },
+            child: VideoCardItem(
+              videoCard: videoCards[index],
+            ),
           );
         },
       ),
