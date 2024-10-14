@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import '../models/video_card.dart';
 import '../components/video_card_item.dart';
+import 'video_card_detail_screen.dart';
 import 'add_video_card_screen.dart';
 
 class VideoCardListScreen extends StatefulWidget {
+  final List<VideoCard> favoriteCards;
+  final Function(VideoCard) toggleFavorite;
+
+  VideoCardListScreen({
+    required this.favoriteCards,
+    required this.toggleFavorite,
+  });
+
   @override
   _VideoCardListScreenState createState() => _VideoCardListScreenState();
 }
@@ -44,25 +53,25 @@ class _VideoCardListScreenState extends State<VideoCardListScreen> {
     ),
   ];
 
-  void _removeVideoCard(int index) {
+  void confirmDelete(VideoCard card) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Вы уверены?"),
-          content: Text("Вы действительно хотите удалить этот товар?"),
-          actions: [
+          title: Text('Удалить товар'),
+          content: Text('Вы уверены, что хотите удалить этот товар?'),
+          actions: <Widget>[
             TextButton(
-              child: Text("Отмена"),
+              child: Text('Отмена'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text("Удалить"),
+              child: Text('Удалить'),
               onPressed: () {
                 setState(() {
-                  videoCards.removeAt(index);
+                  videoCards.remove(card);
                 });
                 Navigator.of(context).pop();
               },
@@ -73,7 +82,16 @@ class _VideoCardListScreenState extends State<VideoCardListScreen> {
     );
   }
 
-  void _addVideoCard(VideoCard newCard) {
+  void viewDetails(VideoCard card) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailsScreen(videoCard: card),
+      ),
+    );
+  }
+
+  void addNewVideoCard(VideoCard newCard) {
     setState(() {
       videoCards.add(newCard);
     });
@@ -82,36 +100,39 @@ class _VideoCardListScreenState extends State<VideoCardListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Список видеокарт'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddVideoCardScreen(onAdd: _addVideoCard),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: ListView.builder(
+      appBar: AppBar(title: Text('Список видеокарт')),
+      body: GridView.builder(
+        padding: EdgeInsets.all(10),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
         itemCount: videoCards.length,
         itemBuilder: (context, index) {
-          return Dismissible(
-            key: UniqueKey(),
-            background: Container(color: Colors.red),
-            onDismissed: (direction) {
-              _removeVideoCard(index);
-            },
-            child: VideoCardItem(
-              videoCard: videoCards[index],
-            ),
+          final videoCard = videoCards[index];
+          return VideoCardItem(
+            videoCard: videoCard,
+            isFavorite: widget.favoriteCards.contains(videoCard),
+            onFavoriteToggle: () => widget.toggleFavorite(videoCard),
+            onDelete: () => confirmDelete(videoCard),
+            onViewDetails: () => viewDetails(videoCard),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final newCard = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddVideoCardScreen()),
+          );
+
+          if (newCard != null) {
+            addNewVideoCard(newCard);
+          }
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
     );
   }

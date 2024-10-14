@@ -2,91 +2,83 @@ import 'package:flutter/material.dart';
 import '../models/video_card.dart';
 
 class AddVideoCardScreen extends StatefulWidget {
-  final Function(VideoCard) onAdd;
-
-  AddVideoCardScreen({required this.onAdd});
-
   @override
   _AddVideoCardScreenState createState() => _AddVideoCardScreenState();
 }
 
 class _AddVideoCardScreenState extends State<AddVideoCardScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final newVideoCard = VideoCard(
-        name: _nameController.text,
-        description: _descriptionController.text,
-        imageUrl: _imageUrlController.text,
-        price: double.tryParse(_priceController.text) ?? 0.0,
-      );
-      widget.onAdd(newVideoCard);
-      Navigator.of(context).pop();
-    }
-  }
+  String name = '';
+  String description = '';
+  String imageUrl = '';
+  double price = 0.0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Добавить видеокарту'),
-      ),
+      appBar: AppBar(title: Text('Добавить видеокарту')),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            children: [
+            children: <Widget>[
               TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Название'),
+                decoration: InputDecoration(labelText: 'Название видеокарты'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите название';
+                    return 'Пожалуйста, введите название';
                   }
                   return null;
                 },
+                onSaved: (value) => name = value!,
               ),
               TextFormField(
-                controller: _descriptionController,
                 decoration: InputDecoration(labelText: 'Описание'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите описание';
+                    return 'Пожалуйста, введите описание';
                   }
                   return null;
                 },
+                onSaved: (value) => description = value!,
               ),
               TextFormField(
-                controller: _priceController,
+                decoration: InputDecoration(labelText: 'Ссылка на изображение'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Пожалуйста, введите ссылку на изображение';
+                  }
+                  return null;
+                },
+                onSaved: (value) => imageUrl = value!,
+              ),
+              TextFormField(
                 decoration: InputDecoration(labelText: 'Цена'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || double.tryParse(value) == null) {
-                    return 'Введите корректную цену';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _imageUrlController,
-                decoration: InputDecoration(labelText: 'URL изображения'),
-                validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Введите URL изображения';
+                    return 'Пожалуйста, введите цену';
                   }
                   return null;
                 },
+                onSaved: (value) => price = double.parse(value!),
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Добавить товар'),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    final newCard = VideoCard(
+                      name: name,
+                      description: description,
+                      imageUrl: imageUrl,
+                      price: price,
+                    );
+                    Navigator.pop(context, newCard);
+                  }
+                },
+                child: Text('Добавить'),
               ),
             ],
           ),
