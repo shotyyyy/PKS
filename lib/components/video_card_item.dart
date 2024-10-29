@@ -6,7 +6,7 @@ class VideoCardItem extends StatelessWidget {
   final bool isFavorite;
   final Function onFavoriteToggle;
   final Function onDelete;
-  final Function onViewDetails;  // Открытие подробностей
+  final Function onViewDetails;
   final Function onAddToCart;
 
   VideoCardItem({
@@ -20,8 +20,8 @@ class VideoCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(  // Делает всю карточку кликабельной
-      onTap: () => onViewDetails(),  // Открытие подробной информации при нажатии на карточку
+    return InkWell(
+      onTap: () => onViewDetails(),
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

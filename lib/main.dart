@@ -31,7 +31,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  // Используем Map для хранения товаров и их количества
+
   Map<VideoCard, int> cartItems = {};
   List<VideoCard> favoriteCards = [];
 
@@ -100,9 +100,9 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        selectedItemColor: Colors.blue,      // Цвет активного элемента
-        unselectedItemColor: Colors.grey,    // Цвет неактивных элементов
-        backgroundColor: Colors.white,       // Цвет фона панели (по желанию)
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -115,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
 
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),  // Иконка для корзины
+            icon: Icon(Icons.shopping_cart),
             label: 'Корзина (${cartItems.values.fold(0, (sum, count) => sum + count)})',
           ),
 

@@ -12,7 +12,6 @@ class CartScreen extends StatelessWidget {
     required this.removeFromCart,
   });
 
-  // Функция для расчета общей стоимости
   double calculateTotalPrice() {
     double total = 0.0;
     cartItems.forEach((videoCard, quantity) {
