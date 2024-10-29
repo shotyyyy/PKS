@@ -6,10 +6,12 @@ import 'video_card_detail_screen.dart';
 class FavoritesScreen extends StatelessWidget {
   final List<VideoCard> favoriteCards;
   final Function(VideoCard) toggleFavorite;
+  final Function(VideoCard) addToCart;
 
   FavoritesScreen({
     required this.favoriteCards,
     required this.toggleFavorite,
+    required this.addToCart,
   });
 
   @override
@@ -39,6 +41,7 @@ class FavoritesScreen extends StatelessWidget {
                 ),
               );
             },
+            onAddToCart: () => addToCart(videoCard),
           );
         },
       ),

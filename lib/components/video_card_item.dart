@@ -6,7 +6,8 @@ class VideoCardItem extends StatelessWidget {
   final bool isFavorite;
   final Function onFavoriteToggle;
   final Function onDelete;
-  final Function onViewDetails;
+  final Function onViewDetails;  // Открытие подробностей
+  final Function onAddToCart;
 
   VideoCardItem({
     required this.videoCard,
@@ -14,51 +15,55 @@ class VideoCardItem extends StatelessWidget {
     required this.onFavoriteToggle,
     required this.onDelete,
     required this.onViewDetails,
+    required this.onAddToCart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        children: [
-          Image.network(
-            videoCard.imageUrl,
-            height: 70,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              videoCard.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+    return InkWell(  // Делает всю карточку кликабельной
+      onTap: () => onViewDetails(),  // Открытие подробной информации при нажатии на карточку
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          children: [
+            Image.network(
+              videoCard.imageUrl,
+              height: 70,
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.red : Colors.grey,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                videoCard.name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                onPressed: () => onFavoriteToggle(),
+                textAlign: TextAlign.center,
               ),
-              IconButton(
-                icon: Icon(Icons.delete, color: Colors.grey),
-                onPressed: () => onDelete(),
-              ),
-              IconButton(
-                icon: Icon(Icons.info_outline, color: Colors.grey),
-                onPressed: () => onViewDetails(),
-              ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : Colors.grey,
+                  ),
+                  onPressed: () => onFavoriteToggle(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.grey),
+                  onPressed: () => onDelete(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.shopping_cart_outlined, color: Colors.grey),
+                  onPressed: () => onAddToCart(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

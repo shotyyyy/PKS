@@ -3,6 +3,7 @@ import 'pages/video_card_list_screen.dart';
 import 'pages/favorites_screen.dart';
 import 'pages/profile_screen.dart';
 import 'models/video_card.dart';
+import 'pages/cart_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,6 +31,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
+  // Используем Map для хранения товаров и их количества
+  Map<VideoCard, int> cartItems = {};
   List<VideoCard> favoriteCards = [];
 
   void toggleFavorite(VideoCard card) {
@@ -48,6 +51,28 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void addToCart(VideoCard card) {
+    setState(() {
+      if (cartItems.containsKey(card)) {
+        cartItems[card] = cartItems[card]! + 1;
+      } else {
+        cartItems[card] = 1;
+      }
+    });
+  }
+
+  void removeFromCart(VideoCard card) {
+    setState(() {
+      if (cartItems.containsKey(card)) {
+        if (cartItems[card]! > 1) {
+          cartItems[card] = cartItems[card]! - 1;
+        } else {
+          cartItems.remove(card);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,14 +82,27 @@ class _MainScreenState extends State<MainScreen> {
           VideoCardListScreen(
             favoriteCards: favoriteCards,
             toggleFavorite: toggleFavorite,
+            addToCart: addToCart,
           ),
-          FavoritesScreen(favoriteCards: favoriteCards, toggleFavorite: toggleFavorite),
+          FavoritesScreen(
+              favoriteCards: favoriteCards,
+              toggleFavorite: toggleFavorite,
+              addToCart: addToCart,
+          ),
+          CartScreen(
+              cartItems: cartItems,
+              addToCart: addToCart,
+              removeFromCart: removeFromCart
+          ),
           ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
+        selectedItemColor: Colors.blue,      // Цвет активного элемента
+        unselectedItemColor: Colors.grey,    // Цвет неактивных элементов
+        backgroundColor: Colors.white,       // Цвет фона панели (по желанию)
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -74,6 +112,11 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Избранное',
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),  // Иконка для корзины
+            label: 'Корзина (${cartItems.values.fold(0, (sum, count) => sum + count)})',
           ),
 
           BottomNavigationBarItem(
