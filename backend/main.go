@@ -175,11 +175,11 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/cards", getCardsHandler).Methods("GET")
-	r.HandleFunc("/cards/{id:[0-9]+}", getCardByIDHandler).Methods("GET")
-	r.HandleFunc("/cards", createCardHandler).Methods("POST")
-	r.HandleFunc("/cards/{id:[0-9]+}", updateCardHandler).Methods("PUT")
-	r.HandleFunc("/cards/{id:[0-9]+}", deleteCardHandler).Methods("DELETE")
+	r.HandleFunc("/products", getCardsHandler).Methods("GET")
+	r.HandleFunc("/products/{id:[0-9]+}", getCardByIDHandler).Methods("GET")
+	r.HandleFunc("/products", createCardHandler).Methods("POST")
+	r.HandleFunc("/products/{id:[0-9]+}", updateCardHandler).Methods("PUT")
+	r.HandleFunc("/products/{id:[0-9]+}", deleteCardHandler).Methods("DELETE")
 
 	fmt.Println("Server running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

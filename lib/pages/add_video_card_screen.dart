@@ -77,10 +77,13 @@ class _AddVideoCardScreenState extends State<AddVideoCardScreen> {
                       price: price,
                     );
                     try {
-                      await ApiService().createCard(newCard);
-                      Navigator.pop(context, newCard);
+                      final createdCard = await ApiService().createCard(newCard);
+                      Navigator.pop(context, createdCard);
                     } catch (e) {
                       print('Ошибка добавления видеокарты: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Не удалось добавить видеокарту')),
+                      );
                     }
                   }
                 },

@@ -8,7 +8,7 @@ class ApiService {
 
   Future<List<VideoCard>> getCards() async {
     try {
-      final response = await _dio.get('/cards'); // Путь к API
+      final response = await _dio.get('/products');
       final data = response.data as List;
       return data.map((json) => VideoCard.fromJson(json)).toList();
     } catch (e) {
@@ -18,7 +18,16 @@ class ApiService {
 
   Future<VideoCard> createCard(VideoCard card) async {
     try {
-      final response = await _dio.post('/create', data: card.toJson());
+      final response = await _dio.post('/products/create', data: card.toJson());
+      return VideoCard.fromJson(response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<VideoCard> getCardById(int id) async {
+    try {
+      final response = await _dio.get('/products/$id');
       return VideoCard.fromJson(response.data);
     } catch (e) {
       rethrow;
@@ -27,7 +36,7 @@ class ApiService {
 
   Future<void> updateCard(VideoCard card) async {
     try {
-      await _dio.put('/update/${card.id}', data: card.toJson());
+      await _dio.put('/products/update/${card.id}', data: card.toJson());
     } catch (e) {
       rethrow;
     }
@@ -35,16 +44,7 @@ class ApiService {
 
   Future<void> deleteCard(int id) async {
     try {
-      await _dio.delete('/delete/$id');
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<VideoCard> getCardById(int id) async {
-    try {
-      final response = await _dio.get('/$id');
-      return VideoCard.fromJson(response.data);
+      await _dio.delete('/products/delete/$id');
     } catch (e) {
       rethrow;
     }

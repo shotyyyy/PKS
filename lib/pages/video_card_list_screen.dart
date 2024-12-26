@@ -38,8 +38,12 @@ class _VideoCardListScreenState extends State<VideoCardListScreen> {
       });
     } catch (e) {
       print('Ошибка загрузки видеокарт: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Не удалось загрузить видеокарты')),
+      );
     }
   }
+
 
   void confirmDelete(VideoCard card) {
     showDialog(
@@ -65,8 +69,14 @@ class _VideoCardListScreenState extends State<VideoCardListScreen> {
                       videoCards.remove(card);
                     });
                     Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Товар удалён')),
+                    );
                   } catch (e) {
                     print('Ошибка удаления: $e');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Не удалось удалить товар')),
+                    );
                   }
                 } else {
                   print('Ошибка: id равен null');
