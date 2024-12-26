@@ -1,20 +1,51 @@
 import 'package:flutter/material.dart';
 import '../models/video_card.dart';
+import '../api/api_service.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   final Map<VideoCard, int> cartItems;
-  final Function(VideoCard) addToCart;
-  final Function(VideoCard) removeFromCart;
 
-  CartScreen({
-    required this.cartItems,
-    required this.addToCart,
-    required this.removeFromCart,
-  });
+  CartScreen({required this.cartItems});
+
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final ApiService _apiService = ApiService();
+
+  void addToCart(VideoCard card) async {
+    try {
+      await _apiService.addToCart(card, 1);
+      setState(() {
+        widget.cartItems[card] = (widget.cartItems[card] ?? 0) + 1;
+      });
+    } catch (e) {
+      print('Ошибка добавления в корзину: $e');
+    }
+  }
+
+  void removeFromCart(VideoCard card) async {
+    try {
+      if (widget.cartItems[card]! > 1) {
+        await _apiService.updateCartItem(card.id!, widget.cartItems[card]! - 1);
+        setState(() {
+          widget.cartItems[card] = widget.cartItems[card]! - 1;
+        });
+      } else {
+        await _apiService.removeFromCart(card.id!);
+        setState(() {
+          widget.cartItems.remove(card);
+        });
+      }
+    } catch (e) {
+      print('Ошибка удаления из корзины: $e');
+    }
+  }
 
   double calculateTotalPrice() {
     double total = 0.0;
-    cartItems.forEach((videoCard, quantity) {
+    widget.cartItems.forEach((videoCard, quantity) {
       total += videoCard.price * quantity;
     });
     return total;
@@ -23,17 +54,15 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Корзина'),
-      ),
+      appBar: AppBar(title: Text('Корзина')),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: cartItems.length,
+              itemCount: widget.cartItems.length,
               itemBuilder: (context, index) {
-                final videoCard = cartItems.keys.elementAt(index);
-                final quantity = cartItems[videoCard]!;
+                final videoCard = widget.cartItems.keys.elementAt(index);
+                final quantity = widget.cartItems[videoCard]!;
                 return ListTile(
                   title: Text(videoCard.name),
                   subtitle: Text('Цена: ${videoCard.price} x $quantity'),

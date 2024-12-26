@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'pages/video_card_list_screen.dart';
 import 'pages/favorites_screen.dart';
-import 'pages/profile_screen.dart';
-import 'models/video_card.dart';
 import 'pages/cart_screen.dart';
+import 'models/video_card.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,8 +29,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-
-
   Map<VideoCard, int> cartItems = {};
   List<VideoCard> favoriteCards = [];
 
@@ -85,16 +82,11 @@ class _MainScreenState extends State<MainScreen> {
             addToCart: addToCart,
           ),
           FavoritesScreen(
-              favoriteCards: favoriteCards,
-              toggleFavorite: toggleFavorite,
-              addToCart: addToCart,
+            favoriteCards: favoriteCards,
           ),
           CartScreen(
-              cartItems: cartItems,
-              addToCart: addToCart,
-              removeFromCart: removeFromCart
+            cartItems: cartItems,
           ),
-          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -108,20 +100,13 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.list),
             label: 'Список товаров',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
             label: 'Избранное',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Корзина (${cartItems.values.fold(0, (sum, count) => sum + count)})',
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Профиль',
           ),
         ],
       ),

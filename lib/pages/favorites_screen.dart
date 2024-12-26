@@ -1,49 +1,52 @@
 import 'package:flutter/material.dart';
 import '../models/video_card.dart';
-import '../components/video_card_item.dart';
-import 'video_card_detail_screen.dart';
 import '../api/api_service.dart';
 
-
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   final List<VideoCard> favoriteCards;
-  final Function(VideoCard) toggleFavorite;
-  final Function(VideoCard) addToCart;
 
-  FavoritesScreen({
-    required this.favoriteCards,
-    required this.toggleFavorite,
-    required this.addToCart,
-  });
+  FavoritesScreen({required this.favoriteCards});
+
+  @override
+  _FavoritesScreenState createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  final ApiService _apiService = ApiService();
+
+  void toggleFavorite(VideoCard card) async {
+    try {
+      if (widget.favoriteCards.contains(card)) {
+        await _apiService.removeFromFavorites(card.id!);
+        setState(() {
+          widget.favoriteCards.remove(card);
+        });
+      } else {
+        await _apiService.addToFavorites(card);
+        setState(() {
+          widget.favoriteCards.add(card);
+        });
+      }
+    } catch (e) {
+      print('Ошибка изменения избранного: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Избранное')),
-      body: GridView.builder(
-        padding: EdgeInsets.all(10),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemCount: favoriteCards.length,
+      body: ListView.builder(
+        itemCount: widget.favoriteCards.length,
         itemBuilder: (context, index) {
-          final videoCard = favoriteCards[index];
-          return VideoCardItem(
-            videoCard: videoCard,
-            isFavorite: true,
-            onFavoriteToggle: () => toggleFavorite(videoCard),
-            onDelete: () {},
-            onViewDetails: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailsScreen(videoCard: videoCard),
-                ),
-              );
-            },
-            onAddToCart: () => addToCart(videoCard),
+          final card = widget.favoriteCards[index];
+          return ListTile(
+            title: Text(card.name),
+            subtitle: Text(card.description),
+            trailing: IconButton(
+              icon: Icon(Icons.favorite, color: Colors.red),
+              onPressed: () => toggleFavorite(card),
+            ),
           );
         },
       ),

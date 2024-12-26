@@ -25,15 +25,6 @@ class ApiService {
     }
   }
 
-  Future<VideoCard> getCardById(int id) async {
-    try {
-      final response = await _dio.get('/products/$id');
-      return VideoCard.fromJson(response.data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<void> updateCard(VideoCard card) async {
     try {
       await _dio.put('/products/update/${card.id}', data: card.toJson());
@@ -45,6 +36,69 @@ class ApiService {
   Future<void> deleteCard(int id) async {
     try {
       await _dio.delete('/products/delete/$id');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<VideoCard>> getCartItems() async {
+    try {
+      final response = await _dio.get('/cart');
+      final data = response.data as List;
+      return data.map((json) => VideoCard.fromJson(json)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addToCart(VideoCard card, int quantity) async {
+    try {
+      await _dio.post('/cart/add', data: {
+        'id': card.id,
+        'quantity': quantity,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateCartItem(int id, int quantity) async {
+    try {
+      await _dio.put('/cart/update/$id', data: {'quantity': quantity});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeFromCart(int id) async {
+    try {
+      await _dio.delete('/cart/remove/$id');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<VideoCard>> getFavoriteItems() async {
+    try {
+      final response = await _dio.get('/favorites');
+      final data = response.data as List;
+      return data.map((json) => VideoCard.fromJson(json)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addToFavorites(VideoCard card) async {
+    try {
+      await _dio.post('/favorites/add', data: {'id': card.id});
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> removeFromFavorites(int id) async {
+    try {
+      await _dio.delete('/favorites/remove/$id');
     } catch (e) {
       rethrow;
     }
