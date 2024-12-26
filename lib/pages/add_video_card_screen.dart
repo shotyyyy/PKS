@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/video_card.dart';
+import '../api/api_service.dart';
 
 class AddVideoCardScreen extends StatefulWidget {
   @override
@@ -66,7 +67,7 @@ class _AddVideoCardScreenState extends State<AddVideoCardScreen> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     final newCard = VideoCard(
@@ -75,7 +76,12 @@ class _AddVideoCardScreenState extends State<AddVideoCardScreen> {
                       imageUrl: imageUrl,
                       price: price,
                     );
-                    Navigator.pop(context, newCard);
+                    try {
+                      await ApiService().createCard(newCard);
+                      Navigator.pop(context, newCard);
+                    } catch (e) {
+                      print('Ошибка добавления видеокарты: $e');
+                    }
                   }
                 },
                 child: Text('Добавить'),
